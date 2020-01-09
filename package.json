@@ -4,11 +4,13 @@
   "description": "Use puppeteer and https://www.speedtest.net to get network speed and write log file with results",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "preview": "http-server -d -o"
   },
   "author": "Edwin Gómez",
   "license": "ISC",
   "dependencies": {
+    "http-server": "^0.12.1",
     "puppeteer": "^2.0.0"
   }
 }
