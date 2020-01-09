@@ -1,12 +1,12 @@
 {
   "name": "network-speed-logger",
   "version": "1.0.0",
-  "description": "",
+  "description": "Use puppeteer and https://www.speedtest.net to get network speed and write log file with results",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Edwin Gómez",
   "license": "ISC",
   "dependencies": {
     "puppeteer": "^2.0.0"
