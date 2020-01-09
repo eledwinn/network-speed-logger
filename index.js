@@ -1,28 +1,28 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const FILE_NAME = 'network.json'
+const FILE_NAME = 'network-results.json'
 const WAIT_FOR_SELECTOR_TIMEOUT = 2 * 60 * 1000
 const WAIT_FOR_RETRY_TIMEOUT = 1 * 60 * 1000
-
  
 const append = newData => {
-    newData.date = new Date();
+    newData.date = new Date()
     let current = [];
     if (fs.existsSync(FILE_NAME)) {
       const fileContent = fs.readFileSync(FILE_NAME)
-      current = JSON.parse(fileContent);
+      current = JSON.parse(fileContent)
     }
-    current.push(newData);
+    current.push(newData)
     fs.writeFileSync(FILE_NAME, JSON.stringify(current))
 }
 
-puppeteer.launch({ headless: false }).then(async browser => {
+puppeteer.launch({ headless: true }).then(async browser => {
   // obtain a reference to the open tab
-  const page = (await browser.pages())[0];
+  const page = (await browser.pages())[0]
   // infinite cycle, use Cmd+C to stop
   while (true) {
-    await page.goto('https://www.speedtest.net/run');
+    await page.goto('https://www.speedtest.net/run')
     await page.waitFor(5000);
+    console.log('Testing network. waiting for results...')
     await page.waitForSelector('.start-button-state-after', { timeout: WAIT_FOR_SELECTOR_TIMEOUT })
 
     const pingElement = await page.$(".ping-speed");
@@ -34,7 +34,7 @@ puppeteer.launch({ headless: false }).then(async browser => {
     
     append({ pingSpeed, downloadSpeed, uploadSpeed });
 
-    console.info(`Completed!!. Waiting ${WAIT_FOR_RETRY_TIMEOUT / 1000} seconds for try again`);
+    console.info(`Completed!! Check results file. Waiting ${WAIT_FOR_RETRY_TIMEOUT / 1000} seconds for try again`);
     await page.waitFor(WAIT_FOR_RETRY_TIMEOUT);
   }
 });
