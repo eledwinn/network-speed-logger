@@ -19,7 +19,7 @@ const append = newData => {
 puppeteer.launch({ headless: true }).then(async browser => {
   // obtain a reference to the open tab
   const page = (await browser.pages())[0]
-  // infinite cycle, use Cmd+C to stop
+  // infinite loop, use Cmd+C to stop
   while (true) {
     await page.goto('https://www.speedtest.net/run')
     await page.waitFor(5000);
