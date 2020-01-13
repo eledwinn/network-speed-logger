@@ -16,7 +16,7 @@ const append = newData => {
     fs.writeFileSync(FILE_NAME, JSON.stringify(current))
 }
 
-puppeteer.launch({ headless: false }).then(async browser => {
+puppeteer.launch({ headless: true }).then(async browser => {
   // obtain a reference to the open tab
   const page = (await browser.pages())[0]
   // infinite cycle, use Cmd+C to stop
