@@ -1,4 +1,5 @@
-var ctx = document.getElementById('myChart').getContext('2d');
+const speedCtx = document.getElementById('speedChart').getContext('2d');
+const crashesCtx = document.getElementById('crashesChart').getContext('2d');
 const chartColors = {
   red: "rgb(255, 99, 132)",
   orange: "rgb(255, 159, 64)",
@@ -9,10 +10,9 @@ const chartColors = {
   grey: "rgb(201, 203, 207)",
 };
 
-const prepareData = async () => {
+const prepareSpeedData = async () => {
   const results = await fetch('/network-results.json').then(response => response.json())
-  console.log(results)
-  const labels = results.map(result => moment(result.date).format('HH:mm'))
+  const labels = results.map(result => moment(result.date).format('MMM/DD HH:mm'))
   const datasets = [{
     label: 'Ping',
     data: results.map(result => +result.pingSpeed),
@@ -35,37 +35,41 @@ const prepareData = async () => {
       fill: false
     })
   });
-  createChart(labels, datasets)
+  createChart(speedCtx, labels, datasets)
 }
 
-const createChart = async(labels, datasets) => {
-  var myChart = new Chart(ctx, {
+const prepareChrasesData = async () => {
+  const results = await fetch('/dns-results.json').then(response => response.json())
+  const groupedResults = results.filter(result => !result.connected).reduce((memory, result) => {
+    const date = moment(result.date).format('MMM/DD HH')
+    if (!memory[date])
+      memory[date] = 0
+      memory[date]++
+    return memory
+  }, {})
+  
+  const crashesData = Object.keys(groupedResults).map(key => groupedResults[key])
+
+  const labels = Object.keys(groupedResults)
+  const datasets = [{
+    label: 'Crashes',
+    data: crashesData,
+    backgroundColor: chartColors.purple,
+    borderColor: chartColors.purple
+  }]
+  datasets.forEach(dataset => {
+    Object.assign(dataset, {
+      borderWidth: 1,
+      fill: false
+    })
+  });
+  createChart(crashesCtx, labels, datasets)
+}
+
+const createChart = async(ctx, labels, datasets) => {
+  new Chart(ctx, {
     type: 'line',
-    data: {
-        labels, //: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets
-        // datasets: [{
-        //     label: 'Ping',
-        //     data: [12, 19, 3, 5, 2, 3],
-        //     // backgroundColor: [
-        //     //     'rgba(255, 99, 132, 0.2)',
-        //     //     'rgba(54, 162, 235, 0.2)',
-        //     //     'rgba(255, 206, 86, 0.2)',
-        //     //     'rgba(75, 192, 192, 0.2)',
-        //     //     'rgba(153, 102, 255, 0.2)',
-        //     //     'rgba(255, 159, 64, 0.2)'
-        //     // ],
-        //     // borderColor: [
-        //     //     'rgba(255, 99, 132, 1)',
-        //     //     'rgba(54, 162, 235, 1)',
-        //     //     'rgba(255, 206, 86, 1)',
-        //     //     'rgba(75, 192, 192, 1)',
-        //     //     'rgba(153, 102, 255, 1)',
-        //     //     'rgba(255, 159, 64, 1)'
-        //     // ],
-        //     borderWidth: 1
-        // }]
-    },
+    data: { labels, datasets },
     options: {
         scales: {
             yAxes: [{
@@ -75,14 +79,11 @@ const createChart = async(labels, datasets) => {
             }]
         }
     }
-});
+  });
 }
 
-prepareData()
-
-pingSpeed: "31"
-downloadSpeed: "4.87"
-uploadSpeed: "4.89"
+prepareSpeedData()
+prepareChrasesData()
 
   // var myChart = new Chart(ctx, {
   //     type: 'line',

@@ -7,10 +7,18 @@
   <title>Document</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <style>
+    body {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
   <div class="chart-container" style="position: relative; height:10vh; width:50vw">
-    <canvas id="myChart" ></canvas>
+    <canvas id="speedChart" ></canvas>
+  </div>
+  <div class="chart-container" style="position: relative; height:10vh; width:50vw">
+    <canvas id="crashesChart" ></canvas>
   </div>
   <script src="./web/core.js"></script>
 </body>

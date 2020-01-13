@@ -23,7 +23,6 @@ const checkdns = () => {
        append({ connected: false })
     } else if (!connected) {
        console.log("With internet!!");
-       append({ connected: true })
     }
     connected = !err
     setTimeout(checkdns, 1000)
