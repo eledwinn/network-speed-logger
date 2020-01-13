@@ -17,11 +17,18 @@ const append = newData => {
 }
 
 puppeteer.launch({ headless: true }).then(async browser => {
-  // obtain a reference to the open tab
-  const page = (await browser.pages())[0]
+  
   // infinite loop, use Cmd+C to stop
   while (true) {
     try {
+      const pages = await browser.pages()
+      if (pages.length) {
+        pages[0].close()
+      }
+      await browser.newPage()
+      // obtain a reference to the open tab
+      const page = (await browser.pages())[0]
+
       await page.goto('https://www.speedtest.net/run')
       await page.waitFor(5000);
       console.log('Testing network. waiting for results...')
@@ -31,6 +38,7 @@ puppeteer.launch({ headless: true }).then(async browser => {
         console.error(error);
         await page.goto('https://www.google.com/')
         console.info('Trying again...')
+        page.close()
         continue
       }
       const pingElement = await page.$(".ping-speed");
@@ -45,15 +53,17 @@ puppeteer.launch({ headless: true }).then(async browser => {
       } else {
         await page.goto('https://www.google.com/')
         console.info('Test results are null, trying again...')
+        page.close()
         continue
       }
-
       console.info(`Completed!! Check results file. Waiting ${WAIT_FOR_RETRY_TIMEOUT / 1000} seconds for try again`);
+      page.close()
       await page.waitFor(WAIT_FOR_RETRY_TIMEOUT);
     } catch(error) {
+      page.close()
       console.error(error)
-      await page.goto('https://www.google.com/')
       console.info('Trying again...')
+      await page.waitFor(5000);
     }
   }
 });
