@@ -2,8 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const FILE_NAME = 'network-results.json'
 const WAIT_FOR_SELECTOR_TIMEOUT = 3 * 60 * 1000
-const WAIT_FOR_RETRY_TIMEOUT = 1 * 60 * 1000
-const { startDnsChecker } = require('./dns-checker')
+const WAIT_FOR_RETRY_TIMEOUT = 5 * 60 * 1000
  
 const append = newData => {
     newData.date = new Date()
@@ -69,4 +68,4 @@ puppeteer.launch({ headless: true }).then(async browser => {
 });
 
 // launch dns checker
-startDnsChecker()
+// startDnsChecker()

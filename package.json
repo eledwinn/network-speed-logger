@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "http-server": "^0.12.1",
+    "is-online": "^8.2.1",
     "puppeteer": "^2.0.0"
   }
 }

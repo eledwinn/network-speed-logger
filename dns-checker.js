@@ -1,4 +1,5 @@
-const dns = require('dns')
+// const dns = require('dns')
+const isOnline = require('is-online');
 const fs = require('fs');
 
 const FILE_NAME = 'dns-results.json'
@@ -16,19 +17,24 @@ const append = newData => {
   fs.writeFileSync(FILE_NAME, JSON.stringify(current))
 }
 
-const checkdns = () => {
-  dns.resolve('www.google.com', function(err) {
-    if (err && connected) {
-       console.log("Without internet!!");
-       append({ connected: false })
-    } else if (!connected) {
-       console.log("With internet!!");
-    }
-    connected = !err
-    setTimeout(checkdns, 1000)
-  });
+const checkdns = async () => {
+  const haveInternet =  await isOnline()
+
+  if (!haveInternet && connected) {
+    console.log("Without internet!!");
+    append({ connected: false })
+  } else if (!connected) {
+      console.log("With internet!!");
+  }
+  
+  connected = haveInternet
+  if (connected)
+    setTimeout(checkdns, 300)
+  else setTimeout(checkdns, 10 * 1000)
 }
 
 exports.startDnsChecker = () => {
   checkdns()
 }
+
+// this.startDnsChecker();
