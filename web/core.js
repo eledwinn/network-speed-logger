@@ -41,7 +41,7 @@ const prepareSpeedData = async () => {
 const prepareChrasesData = async () => {
   const results = await fetch('/dns-results.json').then(response => response.json())
   const groupedResults = results.filter(result => !result.connected).reduce((memory, result) => {
-    const date = moment(result.date).format('MMM/DD HH')
+    const date = moment(result.date).format('DD/MMM HH:00')
     if (!memory[date])
       memory[date] = 0
       memory[date]++

@@ -35,7 +35,6 @@ puppeteer.launch({ headless: true }).then(async browser => {
         await page.waitForSelector('.js-start-test', { visible: true, timeout: WAIT_FOR_SELECTOR_TIMEOUT })
       } catch(error) {
         console.error(error);
-        await page.goto('https://www.google.com/')
         console.info('Trying again...')
         page.close()
         continue
@@ -50,7 +49,6 @@ puppeteer.launch({ headless: true }).then(async browser => {
       if (pingSpeed && downloadSpeed && uploadSpeed) {
         append({ pingSpeed, downloadSpeed, uploadSpeed })
       } else {
-        await page.goto('https://www.google.com/')
         console.info('Test results are null, trying again...')
         page.close()
         continue
@@ -59,13 +57,8 @@ puppeteer.launch({ headless: true }).then(async browser => {
       page.close()
       await page.waitFor(WAIT_FOR_RETRY_TIMEOUT);
     } catch(error) {
-      page.close()
       console.error(error)
       console.info('Trying again...')
-      await page.waitFor(5000);
     }
   }
 });
-
-// launch dns checker
-// startDnsChecker()
